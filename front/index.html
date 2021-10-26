@@ -1,0 +1,69 @@
+<doctype  html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <script src="jquery-3.2.1.min.js"></script>
+</head>
+
+
+
+
+
+<body>
+    <div class="container">
+        <div class="row">
+            
+            <div class="col-md-6 offset-3">
+                <input type="submit" id="sub" class="btn btn-primary">
+            </div>
+            <table id="chats">
+                <thead></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+
+<script type="text/javascript">
+var $me = 1;
+    $(document).ready(function(){
+        
+        var conn = new WebSocket('ws://localhost:8080');
+       
+        headers : {
+            token: "bvhjvjgbsvhvbvv ";
+        }
+        conn.onopen = function(e){
+            console.log("Connection established!");
+        };
+
+        conn.onmessage = function(e) {
+                    //console.log(e.data);
+                    var data = JSON.parse(e.data);
+                    var row = '<tr><td>'+ data.user_from +' </td><td>'+ data.user_to +' </td><td>'+ data.msg +' </td></tr>';
+                   // $('#chats > tbody').append(row);
+                    if(data.user_to == $me){
+                         $('#chats > tbody').append(row);
+                   }
+              
+            };
+        $("#sub").click(function(){
+            var user_from = 1;
+            var msg = "From Chat One";
+            var user_to = "2";
+            //var type = "is_teacher";
+            var data ={
+                user_from: user_from,
+                msg: msg,
+                user_to: user_to,
+               
+            };
+            conn.send(JSON.stringify(data));
+        })
+
+    })
+
+</script>
+</html>
